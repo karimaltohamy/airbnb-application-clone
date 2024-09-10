@@ -1,5 +1,5 @@
 import { useGlobalSearchParams, useNavigation } from "expo-router";
-import React, { useLayoutEffect } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import {
   Dimensions,
   Image,
@@ -21,6 +21,7 @@ import Animated, {
   useScrollViewOffset,
 } from "react-native-reanimated";
 import { defaultStyles } from "@/constants/Styles";
+import MainContext from "@/context/main.context";
 
 const IMG_HEIGHT = 300;
 const { width } = Dimensions.get("window");
@@ -33,6 +34,10 @@ export default function Page() {
   );
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
+  const { wishlist, saveWishlist } = useContext(MainContext);
+  const [isExist, setIsExist] = useState<boolean>(
+    wishlist.some((listing: Listing) => listing.id === id)
+  );
 
   const imageAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -72,6 +77,8 @@ export default function Page() {
     }
   };
 
+  console.log(isExist);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headeTitle: "",
@@ -88,8 +95,20 @@ export default function Page() {
           <TouchableOpacity style={styles.btnHeader} onPress={shareListing}>
             <Feather name="share" size={20} color="black" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.btnHeader}>
-            <Feather name="heart" size={20} color="black" />
+          <TouchableOpacity
+            style={styles.btnHeader}
+            onPress={() => {
+              saveWishlist(listing);
+              setIsExist(
+                wishlist.some((listing: Listing) => listing.id === id)
+              );
+            }}
+          >
+            <Ionicons
+              name={isExist ? "heart" : "heart-outline"}
+              size={24}
+              color={isExist ? "red" : "black"}
+            />
           </TouchableOpacity>
         </View>
       ),
@@ -102,7 +121,11 @@ export default function Page() {
         </TouchableOpacity>
       ),
     });
-  }, []);
+  }, [isExist]);
+
+  useEffect(() => {
+    setIsExist(wishlist.some((listing: Listing) => listing.id === id));
+  }, [id, wishlist]);
 
   return (
     <View style={styles.container}>

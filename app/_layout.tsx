@@ -8,6 +8,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import BookingHeader from "@/components/bookingHeader";
+import { MainProvider } from "@/context/main.context";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,7 +53,9 @@ export default function RootLayout() {
       tokenCache={tokenCache}
       publishableKey={CLERK_PUBLISHABLE_KEY!}
     >
-      <RootLayoutNav />
+      <MainProvider>
+        <RootLayoutNav />
+      </MainProvider>
     </ClerkProvider>
   );
 }

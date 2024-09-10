@@ -1,10 +1,11 @@
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { Stack, Tabs } from "expo-router";
+import { Stack, Tabs, useRouter } from "expo-router";
 import Colors from "@/constants/Colors";
 import { Ionicons, FontAwesome6 } from "@expo/vector-icons";
 
 export default function _layout() {
+  const router = useRouter();
   return (
     <Tabs
       screenOptions={{
@@ -27,6 +28,14 @@ export default function _layout() {
         name="wishlist"
         options={{
           title: "Wishlist",
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => router.back()}
+              className="justify-center items-center border border-gray-300 rounded-full p-2 w-8 h-8 ml-3"
+            >
+              <Ionicons name="arrow-back" size={15} color="gray" />
+            </TouchableOpacity>
+          ),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="heart-outline" size={24} color={color} />
           ),
